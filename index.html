@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI News Archive</title>
+    <meta name="description" content="AI・IT・トレード分野のニュースアーカイブ。日次・週次・月次のまとめを公開。">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1>AI News Archive</h1>
+            <p class="subtitle">AI・IT・トレード分野のニュースを収集・日次/週次/月次でまとめ公開</p>
+            <nav class="site-nav">
+                <a href="#latest">最新ニュース</a>
+                <a href="#archive">アーカイブ</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 最新ニュース -->
+        <section id="latest">
+            <h2 class="section-title">最新ニュース <span class="count" id="newsCount"></span></h2>
+
+            <input type="search" id="newsSearch" class="search-box"
+                placeholder="タイトル・ソースで検索" autocomplete="off">
+
+            <div class="filter-bar" id="categoryChips">
+                <!-- カテゴリchipはJSで生成 -->
+                <button type="button" class="chip selected" data-category="all">全て</button>
+            </div>
+
+            <div id="newsContainer"></div>
+
+            <p id="newsEmpty" class="empty-state hidden">ニュースがまだありません</p>
+        </section>
+
+        <!-- アーカイブ -->
+        <section id="archive">
+            <h2 class="section-title">アーカイブ</h2>
+            <div id="archiveNav">
+                <!-- 日次/週次/月次リストはJSで生成 -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>AI News Archive — 公開専用の静的サイト。日次/週次/月次HTML・manifest.json・news.json はGASバッチが自動更新。</p>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>

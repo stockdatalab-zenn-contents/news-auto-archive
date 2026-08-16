@@ -1,0 +1,561 @@
+/* =========================================================================
+   AI News Archive - 共通スタイル
+   既存PWA (index_gas.html) のデザイントークンを流用・16px基準に再調整
+   日次/週次/月次の生成HTMLも同ファイルをリンクして共通見た目にする
+   ========================================================================= */
+
+/* ---- カラートークン: ライトをデフォルト ---- */
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-alt: #e2e8f0;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --border: #cbd5e1;
+    --radius: 12px;
+    --header-h: 64px;
+}
+
+/* ---- ダークテーマ: 明示切替 ---- */
+[data-theme="dark"] {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-alt: #334155;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border: #475569;
+}
+
+/* ---- リセット ---- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--primary);
+}
+
+/* ---- レイアウト ---- */
+.container {
+    width: 100%;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
+    margin-bottom: 24px;
+}
+
+.site-header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 0.01em;
+}
+
+.site-header .subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.site-nav a {
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: var(--text-muted);
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.breadcrumb .sep {
+    color: var(--border);
+}
+
+/* 生成ページ（日次/週次/月次）の対象期間サブタイトル */
+.period {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+}
+
+section {
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title .count {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+/* ---- ニュースカード ---- */
+.card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+}
+
+.card:hover {
+    border-color: var(--primary);
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 6px;
+}
+
+.card-title a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.card-title a:hover {
+    text-decoration: underline;
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.card-meta .source {
+    font-weight: 600;
+}
+
+/* ---- Tierバッジ ---- */
+.tier-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--text-muted);
+    white-space: nowrap;
+}
+
+.tier-badge.tier-1 {
+    background: var(--primary);
+}
+
+.tier-badge.tier-2 {
+    background: var(--success);
+}
+
+.tier-badge.tier-hn {
+    background: var(--warning);
+}
+
+.tier-badge.tier-other {
+    background: var(--text-muted);
+}
+
+/* ---- 汎用テキスト ---- */
+.text-muted {
+    color: var(--text-muted);
+}
+
+.text-sm {
+    font-size: 0.85rem;
+}
+
+/* ---- フィルタ: chip / button ---- */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.chip:hover {
+    border-color: var(--primary);
+}
+
+.chip.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    border-color: var(--primary);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+/* ---- 検索ボックス ---- */
+.search-box {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.search-box:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* ---- AI要約ボックス (週次/月次ページ上部) ---- */
+.ai-summary {
+    background: var(--surface-alt);
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    line-height: 1.7;
+}
+
+.ai-summary h2,
+.ai-summary .ai-summary-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.ai-summary p {
+    margin-bottom: 8px;
+}
+
+.ai-summary p:last-child {
+    margin-bottom: 0;
+}
+
+/* ---- 日別詳細セクション ---- */
+.details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.details > summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.details > summary::-webkit-details-marker {
+    display: none;
+}
+
+.details > summary::after {
+    content: '▾';
+    color: var(--text-muted);
+    transition: transform 0.2s;
+}
+
+.details[open] > summary::after {
+    transform: rotate(180deg);
+}
+
+.details-body {
+    margin-top: 12px;
+}
+
+/* ---- 統計 ---- */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 16px 8px;
+    background: var(--surface-alt);
+    border-radius: var(--radius);
+}
+
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1.1;
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ---- 詳細テーブル ---- */
+.news-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.news-table th,
+.news-table td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.news-table th {
+    background: var(--surface-alt);
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.news-table tr:hover td {
+    background: var(--surface-alt);
+}
+
+.news-table a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.news-table a:hover {
+    text-decoration: underline;
+}
+
+/* ---- アーカイブナビ ---- */
+.archive-group {
+    margin-bottom: 16px;
+}
+
+.archive-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.archive-quick a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.archive-quick a:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.archive-list {
+    list-style: none;
+    margin-top: 8px;
+}
+
+.archive-list li {
+    border-bottom: 1px solid var(--border);
+}
+
+.archive-list li:last-child {
+    border-bottom: none;
+}
+
+.archive-list a {
+    display: block;
+    padding: 8px 4px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.archive-list a:hover {
+    color: var(--primary);
+}
+
+.archive-list .meta {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-left: 8px;
+}
+
+/* ---- 空状態 ---- */
+.empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* ---- トースト ---- */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(120%);
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* ---- ユーティリティ ---- */
+.hidden {
+    display: none !important;
+}
+
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    margin-top: 32px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* ---- レスポンシブ ---- */
+@media (max-width: 600px) {
+    .stat-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .site-header h1 {
+        font-size: 1.3rem;
+    }
+}
