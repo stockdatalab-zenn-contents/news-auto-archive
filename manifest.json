@@ -1,7 +1,13 @@
 {
-  "updatedAt": "2026-08-16T00:00:00+09:00",
+  "updatedAt": "2026-08-16T14:39:39+09:00",
   "news": "news.json",
-  "daily": [],
+  "daily": [
+    {
+      "date": "2026-08-16",
+      "path": "daily/2026/08/2026-08-16.html",
+      "generatedAt": "2026-08-16T14:39:40+09:00"
+    }
+  ],
   "weekly": [],
   "monthly": []
 }
