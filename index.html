@@ -1,49 +1,52 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI News Archive</title>
-    <meta name="description" content="AI・IT・トレード分野のニュースアーカイブ。日次・週次・月次のまとめを公開。">
+    <title>News roundup</title>
+    <meta name="description" content="AI・IT分野のニュースアーカイブ。日次・週次・月次のまとめを公開。">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-
 <body>
     <header class="site-header">
         <div class="container">
-            <h1>AI News Archive</h1>
-            <p class="subtitle">AI・IT・トレード分野のニュースを収集・日次/週次/月次でまとめ公開</p>
+            <h1>News roundup</h1>
+            <p class="subtitle">AI・IT分野のニュースを収集・日次/週次/月次でまとめ公開</p>
             <nav class="site-nav">
-                <a href="#latest">最新ニュース</a>
+                <a href="#summary">今日の要約</a>
                 <a href="#archive">アーカイブ</a>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        <!-- 最新ニュース -->
-        <section id="latest">
-            <h2 class="section-title">最新ニュース <span class="count" id="newsCount"></span></h2>
+        <!-- 今日の要約プレビュー（.ai-summary スコープを活用した単カラム） -->
+        <section id="summary" class="ai-summary daily-preview" aria-labelledby="summary-title">
+            <h2 id="summary-title">今日の要約プレビュー</h2>
+            <p class="summary-note"><span id="heroDateLabel" class="summary-note__date"></span> 時点｜総件数 <strong id="heroTotal">0</strong>件／Tier1 <strong id="heroTier1">0</strong>件／ソース数 <strong id="heroSources">0</strong></p>
 
-            <input type="search" id="newsSearch" class="search-box"
-                placeholder="タイトル・ソースで検索" autocomplete="off">
+            <h3>全体サマリー</h3>
+            <p><strong>概要</strong></p>
+            <!-- SUMMARY_BULLETS: 初期は空。将来 manifest.daily[0].summary を注入する場合はここへ。 -->
+            <ul class="daily-preview__bullets"></ul>
 
-            <div class="filter-bar" id="categoryChips">
-                <!-- カテゴリchipはJSで生成 -->
-                <button type="button" class="chip selected" data-category="all">全て</button>
-            </div>
+            <h3>注目ニュース</h3>
+            <!-- FEATURED: 初期は空。将来 manifest.daily[0].featured を注入する場合はここへ。 -->
+            <ol class="daily-preview__featured"></ol>
 
-            <div id="newsContainer"></div>
-
-            <p id="newsEmpty" class="empty-state hidden">ニュースがまだありません</p>
+            <p class="daily-preview__cta">
+                <a class="daily-preview__link" id="dailyPreviewLink" href="#">今日の日次まとめを読む →</a>
+            </p>
+            <p class="latest-migration-note">全件のニュース一覧・検索・Tierフィルタは、最新の日次ページ「6. ニュース一覧」にまとめて公開中。</p>
         </section>
 
+        <!-- 最新ニュースセクションは日次ページ「6. ニュース一覧」へ集約済み -->
+
         <!-- アーカイブ -->
-        <section id="archive">
-            <h2 class="section-title">アーカイブ</h2>
+        <section id="archive" aria-labelledby="archive-title">
+            <h2 class="section-title" id="archive-title">アーカイブ</h2>
             <div id="archiveNav">
-                <!-- 日次/週次/月次リストはJSで生成 -->
+                <!-- ARCHIVE_NAV (rendered by app.js) -->
             </div>
         </section>
     </main>
@@ -58,5 +61,4 @@
 
     <script src="assets/js/app.js"></script>
 </body>
-
 </html>

@@ -1,22 +1,31 @@
 /* =========================================================================
-   AI News Archive - 共通スタイル
-   既存PWA (index_gas.html) のデザイントークンを流用・16px基準に再調整
-   日次/週次/月次の生成HTMLも同ファイルをリンクして共通見た目にする
+   AI News Archive - 共通スタイル（after1 + after2 統合版）
+   references/after1（日次生成ページ）と references/after2（静的トップ）の
+   style.css を1本化。共通基盤は重複排除、インタラクティブ部品はグローバル
+   定義（after2 系）に一本化、.news-list__body ラッパのみ after1 固有。
+   同一 style.css を日次生成HTML・週次/月次・静的トップの全ページが読む。
+   優先順位：h1 > h2セクション > h3記事見出し > h4個別ニュース > 本文 > 一覧リンク
    ========================================================================= */
 
 /* ---- カラートークン: ライトをデフォルト ---- */
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
+    --primary: #4338ca;
+    --primary-dark: #3730a3;
+    --primary-soft: #eef2ff;
+    --accent: #f59e0b;
+    --accent-soft: #fef3c7;
     --bg: #f8fafc;
     --surface: #ffffff;
-    --surface-alt: #e2e8f0;
-    --text: #1e293b;
+    --surface-alt: #eef2f7;
+    --text: #0f172a;
+    --text-strong: #020617;
+    --text-body: #475569;
     --text-muted: #64748b;
-    --success: #22c55e;
-    --warning: #f59e0b;
-    --danger: #ef4444;
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
     --border: #cbd5e1;
+    --border-soft: #e2e8f0;
     --radius: 12px;
     --header-h: 64px;
 }
@@ -26,9 +35,13 @@
     --bg: #0f172a;
     --surface: #1e293b;
     --surface-alt: #334155;
+    --primary-soft: #1e1b4b;
     --text: #f1f5f9;
+    --text-strong: #ffffff;
+    --text-body: #cbd5e1;
     --text-muted: #94a3b8;
     --border: #475569;
+    --border-soft: #334155;
 }
 
 /* ---- リセット ---- */
@@ -47,7 +60,7 @@ body {
     background: var(--bg);
     color: var(--text);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -58,55 +71,15 @@ a {
 /* ---- レイアウト ---- */
 .container {
     width: 100%;
-    max-width: 880px;
+    max-width: 920px;
     margin: 0 auto;
-    padding: 0 16px;
-}
-
-.site-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 0;
-    margin-bottom: 24px;
-}
-
-.site-header h1 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--primary);
-    letter-spacing: 0.01em;
-}
-
-.site-header .subtitle {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-}
-
-.site-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-.site-nav a {
-    font-size: 0.9rem;
-    text-decoration: none;
-    color: var(--text-muted);
-    padding: 4px 0;
-    border-bottom: 2px solid transparent;
-}
-
-.site-nav a:hover {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
+    padding: 0 16px 48px;
 }
 
 .breadcrumb {
     font-size: 0.85rem;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin: 16px 0 12px;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -123,98 +96,458 @@ a {
     text-decoration: underline;
 }
 
-.breadcrumb .sep {
-    color: var(--border);
-}
-
-/* 生成ページ（日次/週次/月次）の対象期間サブタイトル */
-.period {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 16px;
-}
-
 section {
-    margin-bottom: 32px;
+    margin-bottom: 40px;
 }
 
-.section-title {
+/* =========================================================================
+   見出し階層（after版のコア）
+   ========================================================================= */
+
+/* --- h1: ページタイトル --- */
+h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-strong);
+    padding: 12px 0 18px;
+    margin-bottom: 32px;
+    border-bottom: 4px solid var(--primary);
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+}
+
+/* --- h2: セクション見出し（1. 今日の要約 / 2. AI / 3. IT / 4. ビジネス / 5. 新しく登場したもの / 6. ニュース一覧） --- */
+/* .ai-summary 内・外の両方に適用 */
+.ai-summary h2,
+.news-list > h2,
+section > h2:not(.ai-summary h2) {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 14px 20px;
+    margin: 40px -20px 24px;
+    border-radius: 8px;
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+    box-shadow: 0 4px 12px rgba(67, 56, 202, 0.18);
+}
+
+.ai-summary > h2:first-child,
+.news-list > h2:first-child {
+    margin-top: 0;
+}
+
+/* --- h3: 記事見出し／サブセクション見出し --- */
+.ai-summary h3 {
     font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    color: var(--text-strong);
+    padding: 8px 0 8px 16px;
+    margin: 28px 0 14px;
+    border-left: 5px solid var(--primary);
+    background: linear-gradient(90deg, var(--primary-soft) 0%, transparent 60%);
+    line-height: 1.5;
+    border-radius: 0 4px 4px 0;
 }
 
-.section-title .count {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-muted);
-}
-
-/* ---- ニュースカード ---- */
-.card {
+/* --- h4: 注目ニュース内の個別記事見出し --- */
+.ai-summary h4 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--text-strong);
+    padding: 12px 16px;
+    margin: 24px 0 14px;
     background: var(--surface);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border);
-    transition: border-color 0.2s;
+    border: 1px solid var(--border-soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 4px;
+    line-height: 1.5;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
 }
 
-.card:hover {
+/* =========================================================================
+   本文・要素スタイル
+   ========================================================================= */
+
+/* --- ai-summary 全体 --- */
+.ai-summary {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    padding: 20px 20px 28px;
+    margin-bottom: 32px;
+    line-height: 1.75;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.ai-summary p {
+    margin-bottom: 10px;
+    color: var(--text-body);
+}
+
+.ai-summary p:last-child {
+    margin-bottom: 0;
+}
+
+/* --- ラベル（概要、ポイント、関連）--- */
+.ai-summary p > strong:only-child,
+.ai-summary p > strong:first-child {
+    display: inline-block;
+    color: var(--primary-dark);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    background: var(--primary-soft);
+    border-radius: 4px;
+    margin-bottom: 4px;
+    margin-top: 8px;
+}
+
+/* --- src-ref: 出典番号チップ（a.src-ref・全ページ共通） --- */
+.src-ref {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    margin: 0 2px;
+    border-radius: 4px;
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    vertical-align: baseline;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+}
+
+.src-ref:hover {
+    background: var(--primary);
+    color: #ffffff;
     border-color: var(--primary);
 }
 
-.card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.4;
-    margin-bottom: 6px;
+/* --- 全体サマリーのキーワード強調（strong.kw・ダーク別定義あり） --- */
+.ai-summary .kw {
+    color: var(--primary-dark);
+    font-weight: 800;
+    background: linear-gradient(transparent 62%, rgba(245, 158, 11, 0.38) 62%);
+    padding: 0 2px;
+    border-radius: 2px;
 }
 
-.card-title a {
-    color: var(--primary);
+[data-theme="dark"] .ai-summary .kw {
+    color: #a5b4fc;
+    background: linear-gradient(transparent 62%, rgba(245, 158, 11, 0.28) 62%);
+}
+
+/* --- 記事内リスト --- */
+.ai-summary ul {
+    padding-left: 22px;
+    margin: 8px 0 14px;
+}
+
+.ai-summary ul li {
+    margin-bottom: 8px;
+    line-height: 1.7;
+    color: var(--text-body);
+}
+
+/* --- 出典一覧のフル URL 表示を控えめに --- */
+.ai-summary ul li a[href^="http"]:not(.src-ref) {
+    color: var(--text-muted);
+    font-size: 0.82rem;
     text-decoration: none;
+    word-break: break-all;
 }
 
-.card-title a:hover {
+.ai-summary ul li a[href^="http"]:not(.src-ref):hover {
+    color: var(--primary);
     text-decoration: underline;
+}
+
+/* =========================================================================
+   アコーディオン（記事詳細・ニュース一覧を折りたたむ）
+   ========================================================================= */
+
+/* --- 記事詳細アコーディオン（セクション2〜5の各記事 details.article） --- */
+.ai-summary details.article {
+    margin: 20px 0 14px;
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    background: var(--surface);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.ai-summary details.article[open] {
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+.ai-summary details.article > summary {
+    cursor: pointer;
+    padding: 0;
+    list-style: none;
+    display: block;
+    position: relative;
+}
+
+.ai-summary details.article > summary::-webkit-details-marker {
+    display: none;
+}
+
+.ai-summary details.article > summary::after {
+    content: '＋';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1;
+    transition: color 0.2s;
+    pointer-events: none;
+}
+
+.ai-summary details.article[open] > summary::after {
+    content: '−';
+}
+
+/* summary 内の h3 を、既存スタイル（左ボーダー・ソフト背景）を活かしつつ調整 */
+.ai-summary details.article > summary > h3 {
+    margin: 0;
+    padding: 12px 48px 12px 16px;
+    border-radius: 0;
+    line-height: 1.5;
+}
+
+.ai-summary details.article > summary:hover > h3 {
+    background: linear-gradient(90deg, var(--primary-soft) 0%, var(--primary-soft) 100%);
+}
+
+.ai-summary details.article .article-body {
+    padding: 14px 18px 18px;
+    border-top: 1px solid var(--border-soft);
+}
+
+.ai-summary details.article .article-body > p:first-child,
+.ai-summary details.article .article-body > ul:first-child {
+    margin-top: 0;
+}
+
+/* --- ニュース一覧アコーディオン（details.news-list-accordion） --- */
+.news-list details.news-list-accordion {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.news-list details.news-list-accordion > summary {
+    cursor: pointer;
+    padding: 18px 22px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-strong);
+    list-style: none;
+    position: relative;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s;
+}
+
+.news-list details.news-list-accordion > summary::-webkit-details-marker {
+    display: none;
+}
+
+.news-list details.news-list-accordion > summary::before {
+    content: '＋';
+    color: var(--primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1;
+    width: 20px;
+    text-align: center;
+}
+
+.news-list details.news-list-accordion[open] > summary::before {
+    content: '−';
+}
+
+.news-list details.news-list-accordion > summary:hover {
+    background: var(--primary-soft);
+}
+
+/* =========================================================================
+   カード（.card はグローバル定義・padding 20px に一本化）
+   ========================================================================= */
+
+.card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.card.hidden {
+    display: none !important;
 }
 
 .card-meta {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    font-size: 0.8rem;
+    justify-content: space-between;
+    gap: 12px;
     color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
 }
 
 .card-meta .source {
     font-weight: 600;
+    color: var(--text-body);
 }
 
-/* ---- Tierバッジ ---- */
+.card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.55;
+    margin: 4px 0 0;
+    padding: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+
+.card-title a {
+    color: var(--text-strong);
+    text-decoration: none;
+}
+
+.card-title a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* =========================================================================
+   統計ボックス（旧 stat-grid・後方互換で温存）
+   ========================================================================= */
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+    max-width: 360px;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 14px 8px;
+    background: var(--primary-soft);
+    border-radius: 8px;
+}
+
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.1;
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: block;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+/* =========================================================================
+   ニュース一覧テーブル（旧 news-table・後方互換で温存）
+   ========================================================================= */
+
+.news-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.news-table th,
+.news-table td {
+    border-bottom: 1px solid var(--border-soft);
+    padding: 12px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.news-table th {
+    background: var(--surface-alt);
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-bottom: 2px solid var(--border);
+}
+
+.news-table tbody tr:hover td {
+    background: var(--primary-soft);
+}
+
+.news-table a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.news-table a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* =========================================================================
+   Tierバッジ（tier-badge + 色クラス・全ページ共通）
+   ========================================================================= */
 .tier-badge {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.7rem;
     font-weight: 700;
-    color: #fff;
+    color: #ffffff;
     background: var(--text-muted);
     white-space: nowrap;
+    letter-spacing: 0.03em;
 }
 
+/* Tier別の色分け（badge） */
 .tier-badge.tier-1 {
     background: var(--primary);
 }
 
 .tier-badge.tier-2 {
     background: var(--success);
+}
+
+.tier-badge.tier-3 {
+    background: var(--warning);
+}
+
+.tier-badge.tier-4 {
+    background: var(--text-muted);
 }
 
 .tier-badge.tier-hn {
@@ -225,7 +558,10 @@ section {
     background: var(--text-muted);
 }
 
-/* ---- 汎用テキスト ---- */
+/* =========================================================================
+   ユーティリティ・小要素
+   ========================================================================= */
+
 .text-muted {
     color: var(--text-muted);
 }
@@ -234,247 +570,668 @@ section {
     font-size: 0.85rem;
 }
 
-/* ---- フィルタ: chip / button ---- */
-.filter-bar {
+.hidden {
+    display: none !important;
+}
+
+/* =========================================================================
+   共通レスポンシブ（基盤）
+   ========================================================================= */
+@media (max-width: 720px) {
+    body {
+        font-size: 15px;
+    }
+
+    .container {
+        padding: 0 12px 32px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .ai-summary h2,
+    .news-list > h2,
+    section > h2:not(.ai-summary h2) {
+        font-size: 1.2rem;
+        padding: 12px 14px;
+        margin: 32px -16px 20px;
+        letter-spacing: 0.02em;
+    }
+
+    .ai-summary h3 {
+        font-size: 1.05rem;
+    }
+
+    .ai-summary h4 {
+        font-size: 1rem;
+    }
+
+    .ai-summary {
+        padding: 16px 14px 20px;
+    }
+
+    .news-table {
+        font-size: 0.82rem;
+    }
+
+    .news-table th,
+    .news-table td {
+        padding: 10px 8px;
+    }
+
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+/* =========================================================================
+   サイトヘッダー / ナビ / フッター（トップ専用）
+   ========================================================================= */
+.site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-soft);
+    padding: 24px 0 16px;
+    margin-bottom: 24px;
+}
+
+.site-header .subtitle {
+    color: var(--text-muted);
+    margin-top: -20px;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+
+.site-nav {
     display: flex;
+    gap: 16px;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
+    padding-top: 8px;
 }
 
-.chip {
-    padding: 6px 14px;
-    border-radius: 20px;
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-
-.chip:hover {
-    border-color: var(--primary);
-}
-
-.chip.selected {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: #fff;
-}
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 18px;
-    border-radius: 10px;
+.site-nav a {
+    color: var(--text-body);
+    text-decoration: none;
     font-size: 0.9rem;
     font-weight: 600;
-    border: 1px solid var(--border);
-    background: var(--surface-alt);
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.2s;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border-soft);
+    background: var(--surface);
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
 }
 
-.btn:hover {
+.site-nav a:hover {
+    color: var(--primary);
+    background: var(--primary-soft);
     border-color: var(--primary);
 }
 
-.btn-primary {
+.site-footer {
+    border-top: 1px solid var(--border-soft);
+    padding: 24px 0;
+    margin-top: 40px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    background: var(--surface);
+}
+
+/* =========================================================================
+   Hero Stats（トップ専用・静か・後段h2を主役に）
+   ========================================================================= */
+.hero-stats {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    padding: 24px 24px 28px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.hero-stats__eyebrow {
+    color: var(--primary-dark);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--primary-soft);
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+/* hero-stats__title は h2 だが控えめに（統計カードを主役にする） */
+.hero-stats .hero-stats__title {
+    all: unset;
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    background: none;
+    padding: 0;
+    margin: 0 0 8px;
+    border: none;
+    box-shadow: none;
+}
+
+.hero-stats__lead {
+    color: var(--text-body);
+    font-size: 0.95rem;
+    margin: 0 0 20px;
+}
+
+.hero-stats__date {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.hero-stats__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.hero-stat {
+    text-align: center;
+    padding: 16px 8px;
+    background: var(--primary-soft);
+    border-radius: 8px;
+    border: 1px solid var(--border-soft);
+}
+
+.hero-stat__value {
+    display: block;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.1;
+}
+
+.hero-stat__label {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+/* =========================================================================
+   Daily Summary Preview（トップ専用・.ai-summary スコープを活用）
+   ========================================================================= */
+.daily-preview {
+    /* .ai-summary の見た目を継承・追加調整のみ */
+}
+
+.daily-preview__bullets {
+    padding-left: 22px;
+    margin: 6px 0 10px;
+}
+
+.daily-preview__bullets li {
+    color: var(--text-body);
+    margin-bottom: 6px;
+}
+
+/* 要約プレビューの注釈行（旧 hero-stats の情報をここへ移設） */
+.summary-note {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: -8px 0 16px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+}
+
+.summary-note strong {
+    color: var(--text-body);
+    font-weight: 700;
+    margin: 0 2px;
+}
+
+.summary-note__date {
+    color: var(--text-body);
+    font-weight: 600;
+}
+
+.daily-preview__featured {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 12px;
+    counter-reset: featured;
+}
+
+.daily-preview__featured li {
+    counter-increment: featured;
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px 12px 10px 44px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    line-height: 1.55;
+}
+
+.daily-preview__featured li::before {
+    content: counter(featured);
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
     background: var(--primary);
-    border-color: var(--primary);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.daily-preview__featured li a {
+    color: var(--text-strong);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.daily-preview__featured li a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* 注目ニュース見出し：本文より明確に目立たせる */
+.daily-preview__featured-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-strong);
+    line-height: 1.45;
+    margin: 0 0 6px;
+    letter-spacing: 0.01em;
+}
+
+.daily-preview__featured-summary {
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--text-body);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.daily-preview__cta {
+    text-align: right;
+    margin-top: 12px;
+}
+
+/* ニュース一覧の集約先案内（after1「6. ニュース一覧」への導線） */
+.latest-migration-note {
+    margin: 12px 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.latest-migration-note strong {
+    color: var(--text-body);
+    font-weight: 700;
+}
+
+.latest-migration-note a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.latest-migration-note a:hover {
+    text-decoration: underline;
+}
+
+.daily-preview__link {
+    display: inline-block;
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+    padding: 8px 14px;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.daily-preview__link:hover {
+    background: var(--primary);
     color: #fff;
 }
 
-.btn-primary:hover {
-    background: var(--primary-dark);
-    border-color: var(--primary-dark);
+/* =========================================================================
+   ニュース一覧 body（after1 固有：アコーディオン内側のラッパー）
+   ========================================================================= */
+.news-list__body {
+    padding: 20px;
+    background: var(--surface);
+    border-top: 1px solid var(--border-soft);
 }
 
-/* ---- 検索ボックス ---- */
+/* アコーディオン直下のカードは枠線を消して行区切りに */
+.news-list details.news-list-accordion .card {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    border-top: 1px solid var(--border-soft);
+    margin-bottom: 0;
+    padding: 20px;
+}
+
+/* =========================================================================
+   検索ボックス / フィルタバー（グローバル一本化・after2 系）
+   ========================================================================= */
 .search-box {
     width: 100%;
     padding: 10px 14px;
-    border-radius: 10px;
+    font-size: 0.95rem;
     border: 1px solid var(--border);
+    border-radius: 8px;
     background: var(--surface);
     color: var(--text);
-    font-size: 0.95rem;
     margin-bottom: 12px;
 }
 
 .search-box:focus {
     outline: none;
     border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.15);
 }
 
-/* ---- AI要約ボックス (週次/月次ページ上部) ---- */
-.ai-summary {
-    background: var(--surface-alt);
-    border-left: 4px solid var(--primary);
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 24px;
-    line-height: 1.7;
+.filter-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 12px 0 20px;
 }
 
-.ai-summary h2,
-.ai-summary .ai-summary-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 8px;
-}
-
-.ai-summary p {
-    margin-bottom: 8px;
-}
-
-.ai-summary p:last-child {
-    margin-bottom: 0;
-}
-
-/* ---- 日別詳細セクション ---- */
-.details {
+/* =========================================================================
+   Tier フィルタチップ（グローバル一本化・tier-chip 派生・色は tier-badge と統一）
+   ========================================================================= */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 16px;
-}
-
-.details > summary {
-    cursor: pointer;
+    border-radius: 999px;
+    color: var(--text-body);
+    font-size: 0.85rem;
     font-weight: 600;
-    font-size: 1rem;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
-.details > summary::-webkit-details-marker {
-    display: none;
+.chip:hover {
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+    border-color: var(--primary);
 }
 
-.details > summary::after {
-    content: '▾';
+.chip.selected {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+/* Tier チップ（派生） */
+.tier-chip {
+    padding: 6px 12px;
+}
+
+.tier-chip__dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.tier-chip__label {
+    font-weight: 700;
+}
+
+.tier-chip__count {
+    display: inline-block;
+    min-width: 22px;
+    padding: 1px 6px;
+    background: var(--surface-alt);
     color: var(--text-muted);
-    transition: transform 0.2s;
-}
-
-.details[open] > summary::after {
-    transform: rotate(180deg);
-}
-
-.details-body {
-    margin-top: 12px;
-}
-
-/* ---- 統計 ---- */
-.stat-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.stat-box {
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
     text-align: center;
-    padding: 16px 8px;
-    background: var(--surface-alt);
-    border-radius: var(--radius);
+    line-height: 1.4;
 }
 
-.stat-value {
-    font-size: 1.9rem;
+/* Tier別ドット色（tier-badge と同色系） */
+.tier-chip--tier-1 .tier-chip__dot { background: var(--primary); }
+.tier-chip--tier-2 .tier-chip__dot { background: var(--success); }
+.tier-chip--tier-other .tier-chip__dot { background: var(--warning); }
+.tier-chip--tier-hn .tier-chip__dot { background: var(--warning); }
+.tier-chip--all .tier-chip__dot { background: var(--text-muted); }
+
+/* 選択時：Tier色を背景に */
+.tier-chip.selected {
+    color: #fff;
+    border-color: transparent;
+}
+
+.tier-chip.selected .tier-chip__dot {
+    background: #fff;
+}
+
+.tier-chip.selected .tier-chip__count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+.tier-chip--tier-1.selected { background: var(--primary); border-color: var(--primary); }
+.tier-chip--tier-2.selected { background: var(--success); border-color: var(--success); }
+.tier-chip--tier-other.selected { background: var(--warning); border-color: var(--warning); }
+.tier-chip--tier-hn.selected { background: var(--warning); border-color: var(--warning); }
+.tier-chip--all.selected { background: var(--primary-dark); border-color: var(--primary-dark); }
+
+/* =========================================================================
+   Tier グルーピング（グローバル一本化・Tier1/2 常時展開 / Tier3/HN 折り畳み）
+   ========================================================================= */
+.tier-group {
+    margin-bottom: 28px;
+}
+
+.tier-group__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0 10px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--border-soft);
+}
+
+.tier-group__title {
+    font-size: 1.1rem;
     font-weight: 700;
-    color: var(--primary);
-    line-height: 1.1;
+    color: var(--text-strong);
+    margin: 0;
+    flex: 1;
+    padding: 0;
+    border: none;
+    background: none;
+    line-height: 1.4;
+    box-shadow: none;
 }
 
-.stat-label {
+.tier-group__count {
     font-size: 0.78rem;
+    font-weight: 600;
     color: var(--text-muted);
-    margin-top: 4px;
-}
-
-/* ---- 詳細テーブル ---- */
-.news-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
-}
-
-.news-table th,
-.news-table td {
-    border: 1px solid var(--border);
-    padding: 8px 10px;
-    text-align: left;
-    vertical-align: top;
-}
-
-.news-table th {
     background: var(--surface-alt);
-    font-weight: 700;
-    color: var(--text-muted);
+    padding: 2px 10px;
+    border-radius: 999px;
     white-space: nowrap;
 }
 
-.news-table tr:hover td {
-    background: var(--surface-alt);
+/* 折り畳み可能グループ（Tier3/HN） */
+.tier-group--collapsible {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    padding: 12px 16px 4px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
 }
 
-.news-table a {
+.tier-group--collapsible > summary {
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+    padding-right: 32px;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.tier-group--collapsible > summary::-webkit-details-marker {
+    display: none;
+}
+
+.tier-group--collapsible > summary::after {
+    content: '＋';
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--primary);
-    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1;
 }
 
-.news-table a:hover {
-    text-decoration: underline;
+.tier-group--collapsible[open] > summary::after {
+    content: '−';
 }
 
-/* ---- アーカイブナビ ---- */
-.archive-group {
-    margin-bottom: 16px;
+.tier-group--collapsible[open] > summary {
+    border-bottom: 2px solid var(--border-soft);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
 }
 
+.tier-group__body {
+    /* 既存 .card を子に持つ・追加調整なし */
+}
+
+/* 非表示のグループ（フィルタ適用時） */
+.tier-group.hidden {
+    display: none !important;
+}
+
+/* =========================================================================
+   アーカイブナビ（トップ専用）
+   ========================================================================= */
 .archive-quick {
     display: flex;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 8px;
     margin-bottom: 16px;
 }
 
 .archive-quick a {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-    color: var(--text);
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--primary-soft);
+    color: var(--primary-dark);
     text-decoration: none;
-    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 8px;
+    border: 1px solid var(--border-soft);
+    transition: background 0.15s;
 }
 
 .archive-quick a:hover {
-    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+}
+
+.archive-quick .meta {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.archive-quick a:hover .meta {
+    color: var(--primary-dark);
+    background: #fff;
+}
+
+.archive-group {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+}
+
+.archive-group > summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--text-strong);
+    list-style: none;
+    position: relative;
+    padding-right: 24px;
+}
+
+.archive-group > summary::-webkit-details-marker {
+    display: none;
+}
+
+.archive-group > summary::after {
+    content: '＋';
+    position: absolute;
+    right: 0;
+    top: 0;
     color: var(--primary);
+    font-weight: 700;
+}
+
+.archive-group[open] > summary::after {
+    content: '−';
+}
+
+.archive-group .details-body {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-soft);
 }
 
 .archive-list {
     list-style: none;
-    margin-top: 8px;
+    padding: 0;
+    margin: 0;
 }
 
 .archive-list li {
-    border-bottom: 1px solid var(--border);
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border-soft);
 }
 
 .archive-list li:last-child {
@@ -482,15 +1239,14 @@ section {
 }
 
 .archive-list a {
-    display: block;
-    padding: 8px 4px;
-    color: var(--text);
+    color: var(--text-body);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 .archive-list a:hover {
     color: var(--primary);
+    text-decoration: underline;
 }
 
 .archive-list .meta {
@@ -499,63 +1255,114 @@ section {
     margin-left: 8px;
 }
 
-/* ---- 空状態 ---- */
+/* =========================================================================
+   空状態・件数・トースト（トップ専用）
+   ========================================================================= */
 .empty-state {
-    text-align: center;
-    padding: 32px 16px;
     color: var(--text-muted);
+    padding: 16px;
+    text-align: center;
     font-size: 0.9rem;
 }
 
-/* ---- トースト ---- */
+.count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-left: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+}
+
 .toast {
     position: fixed;
-    left: 50%;
     bottom: 24px;
-    transform: translateX(-50%) translateY(120%);
-    background: var(--text);
-    color: var(--bg);
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-strong);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
     opacity: 0;
-    transition: all 0.3s;
-    z-index: 1000;
+    transition: opacity 0.2s, transform 0.2s;
     pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .toast.show {
-    transform: translateX(-50%) translateY(0);
     opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
 }
 
-/* ---- ユーティリティ ---- */
-.hidden {
-    display: none !important;
-}
+/* =========================================================================
+   レスポンシブ（トップ専用・インタラクティブ部品追加分）
+   ========================================================================= */
+@media (max-width: 720px) {
+    .hero-stats {
+        padding: 20px 16px 22px;
+    }
 
-.site-footer {
-    border-top: 1px solid var(--border);
-    padding: 24px 0;
-    margin-top: 32px;
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    text-align: center;
-}
+    .hero-stats .hero-stats__title {
+        font-size: 0.95rem;
+    }
 
-/* ---- レスポンシブ ---- */
-@media (max-width: 600px) {
-    .stat-grid {
+    .hero-stats__grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
     }
 
-    .stat-value {
-        font-size: 1.5rem;
+    .hero-stat {
+        padding: 12px 4px;
     }
 
-    .site-header h1 {
-        font-size: 1.3rem;
+    .hero-stat__value {
+        font-size: 1.4rem;
+    }
+
+    .hero-stat__label {
+        font-size: 0.7rem;
+    }
+
+    .site-nav {
+        gap: 8px;
+    }
+
+    .site-nav a {
+        font-size: 0.82rem;
+        padding: 5px 10px;
+    }
+
+    .news-list__body {
+        padding: 14px;
+    }
+
+    .tier-chip {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+
+    .tier-group__title {
+        font-size: 1rem;
+    }
+
+    .card {
+        padding: 16px 16px;
+    }
+
+    .daily-preview__featured-title {
+        font-size: 1rem;
+    }
+
+    .daily-preview__featured-summary {
+        font-size: 0.85rem;
+    }
+
+    .daily-preview__featured li {
+        padding: 10px 10px 10px 40px;
     }
 }
